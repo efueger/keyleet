@@ -1,0 +1,28 @@
+{
+  "name": "keyleet",
+  "version": "0.1.0",
+  "description": "Delete keys from object",
+  "main": "keyleet.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha -R tap"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com:jkaan/keyleet.git"
+  },
+  "keywords": [
+    "delete",
+    "remove",
+    "object",
+    "key",
+    "attribute",
+    "nested"
+  ],
+  "author": "Joey Kaan",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "mocha": "~1.19.0",
+    "should": "~3.3.1"
+  }
+}

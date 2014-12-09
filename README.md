@@ -1,4 +1,4 @@
-keyleet
+Keyleet
 =======
 
-Library to delete keys from objects using various notations (dot-notation
+Library to delete keys from objects.
