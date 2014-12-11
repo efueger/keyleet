@@ -74,6 +74,6 @@ describe('delKey', function() {
     it('shall check if accessValueByString method correctly works if normal key should be retrieved', function() {
         var value = keyleet.accessValueByString(object, 'data');
 
-        assert.equal(value, {name: 'Testie Test', firstName: 'Testie', lastName: 'Test'});
+        assert.deepEqual(value, {name: 'Testie Test', firstName: 'Testie', lastName: 'Test'});
     });
 });
