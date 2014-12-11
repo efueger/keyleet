@@ -116,7 +116,7 @@ var processAddObject = function(dotArray, addConditionObject) {
     for (var key1 in dotArray) {
         for (var key2 in dotArrayOfKeys) {
             if (!dotArray.hasOwnProperty(key2)) {
-                dotArray[addConditionObject] = '';
+                dotArray[key2] = '';
             }
         }
     }

@@ -13,17 +13,17 @@ var object = {
 };
 
 describe('delKey', function() {
-    it('shall check if parameter 1 is object', function() {
+    it('shall check if deleteKeys parameter 1 is object', function() {
             try {
                 keyleet.deleteKeys('test', 'data.test');
-                assert.fail('Empty parameter should throw error');
+                assert.fail('First parameter not object should throw error');
             } catch (ex) {
                 ex.should.not.be.equal(null);
             }
         }
     );
 
-    it('shall check if parameter 2 is provided', function() {
+    it('shall check if deleteKeys parameter 2 is not provided throws error', function() {
         try {
             keyleet.deleteKeys({});
             assert.fail('No second parameter should throw error');
@@ -32,33 +32,33 @@ describe('delKey', function() {
         }
     });
 
-    it('shall check if correctly working if second parameter is object literal', function() {
+    it('shall check if deleteKeys correctly working if second parameter is object literal', function() {
         var returnedObject = keyleet.deleteKeys(object, {data: {name: ''}});
 
         assert.equal(returnedObject.data.name, undefined, 'key should be deleted');
     });
 
-    it('shall check if correctly working if second parameter is string', function() {
+    it('shall check if deleteKeys correctly working if second parameter is string', function() {
         var returnedObject = keyleet.deleteKeys(object, 'data.name');
 
         assert.equal(returnedObject.data.name, undefined, 'key should be deleted');
     });
 
-    it('shall check if correctly working if second parameter is array of object literals', function() {
+    it('shall check if deleteKeys correctly working if second parameter is array of object literals', function() {
         var returnedObject = keyleet.deleteKeys(object, [{data: {name: ''}}, {data: {firstName: ''}}]);
 
         assert.equal(returnedObject.data.name, undefined, 'key should be deleted');
         assert.equal(returnedObject.data.firstName, undefined, 'key should be deleted');
     });
 
-    it('shall check if correctly working if second parameter is array of strings', function() {
+    it('shall check if deleteKeys correctly working if second parameter is array of strings', function() {
         var returnedObject = keyleet.deleteKeys(object, ['data.name', 'data.firstName']);
 
         assert.equal(returnedObject.data.name, undefined, 'key should be deleted');
         assert.equal(returnedObject.data.firstName, undefined, 'key should be deleted');
     });
 
-    it('shall check if correctly working if second parameter is array of both object literal and strings', function() {
+    it('shall check if deleteKeys correctly working if second parameter is array of both object literal and strings', function() {
         var returnedObject = keyleet.deleteKeys(object, [{data: {name: ''}}, 'data.firstName']);
 
         assert.equal(returnedObject.data.name, undefined, 'key should be deleted');
@@ -75,5 +75,57 @@ describe('delKey', function() {
         var value = keyleet.accessValueByString(object, 'data');
 
         assert.deepEqual(value, {name: 'Testie Test', firstName: 'Testie', lastName: 'Test'});
+    });
+
+    it('shall check if addKeys parameter 1 is object', function() {
+            try {
+                keyleet.addKeys('test', 'data.test');
+                assert.fail('First parameter not object should throw error');
+            } catch (ex) {
+                ex.should.not.be.equal(null);
+            }
+        }
+    );
+
+    it('shall check if addKeys parameter 2 is not provided is correctly working', function() {
+        try {
+            keyleet.deleteKeys({});
+            assert.fail('No second parameter should throw error');
+        } catch (ex) {
+            ex.should.not.be.equal(null);
+        }
+    });
+
+    it('shall check if addKeys correctly working if second parameter is object literal', function() {
+        var returnedObject = keyleet.addKeys(object, {data: {test: ''}});
+
+        assert.equal(returnedObject.data.test, '', 'key should be added');
+    });
+
+    it('shall check if addKeys correctly working if second parameter is string', function() {
+        var returnedObject = keyleet.addKeys(object, 'data.test');
+
+        assert.equal(returnedObject.data.test, '', 'key should be added');
+    });
+
+    it('shall check if addKeys correctly working if second parameter is array of object literals', function() {
+        var returnedObject = keyleet.addKeys(object, [{data: {test1: ''}}, {data: {test2: ''}}]);
+
+        assert.equal(returnedObject.data.test1, '', 'key should be added');
+        assert.equal(returnedObject.data.test2, '', 'key should be added');
+    });
+
+    it('shall check if addKeys correctly working if second parameter is array of strings', function() {
+        var returnedObject = keyleet.addKeys(object, ['data.test1', 'data.test2']);
+
+        assert.equal(returnedObject.data.test1, '', 'key should be added');
+        assert.equal(returnedObject.data.test2, '', 'key should be added');
+    });
+
+    it('shall check if addKeys correctly working if second parameter is array of both object literal and strings', function() {
+        var returnedObject = keyleet.addKeys(object, [{data: {test1: ''}}, 'data.test2']);
+
+        assert.equal(returnedObject.data.test1, '', 'key should be added');
+        assert.equal(returnedObject.data.test2, '', 'key should be added');
     });
 });
