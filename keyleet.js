@@ -78,8 +78,8 @@ var toMultiLayeredObject = function (data) {
     return result;
 };
 
-var processObject = function(dotArray, removeCondition) {
-    var dotArrayOfKeys = getAllKeysForObject(removeCondition);
+var processDeleteObject = function(dotArray, removeConditionObject) {
+    var dotArrayOfKeys = getAllKeysForObject(removeConditionObject);
 
     for (var key1 in dotArray) {
         for (var key2 in dotArrayOfKeys) {
@@ -92,7 +92,7 @@ var processObject = function(dotArray, removeCondition) {
     return toMultiLayeredObject(dotArray);
 };
 
-var processString = function(dotArray, removeConditionString) {
+var processDeleteString = function(dotArray, removeConditionString) {
     if (dotArray.hasOwnProperty(removeConditionString)) {
         delete dotArray[removeConditionString];
     }
@@ -100,50 +100,148 @@ var processString = function(dotArray, removeConditionString) {
     return toMultiLayeredObject(dotArray);
 };
 
-var deleteKeys = function(object, removeConditions) {
-    // First parameter should always be object
-    if (!(isObject(object))) {
-        throw new InvalidInputException('First parameter should be object literal');
+var processAddString = function(dotArray, addConditionString) {
+    if (dotArray.hasOwnProperty(addConditionString)) {
+        return toMultiLayeredObject(dotArray);
     }
 
-    if (typeof removeConditions === 'undefined') {
-        throw new InvalidInputException('Second parameter should be provided');
-    }
+    dotArray[addConditionString] = '';
 
-    var dotArray = getAllKeysForObject(object);
+    return toMultiLayeredObject(dotArray);
+};
 
-    // From now on removeConditions will be checked, a few options are possible:
-    // 1. Object literal containing keys and possibly values which should be removed from the object
-    // 2. Array containing a bunch of number 1.
-    // 3. String in the form of key.nestedkey which will delete the keys from an object
-    // 4. Array containing number 3.
+var processAddObject = function(dotArray, addConditionObject) {
+    var dotArrayOfKeys = getAllKeysForObject(addConditionObject);
 
-    // Number 3
-    if (isString(removeConditions)) {
-        return processString(dotArray, removeConditions);
-    }
-
-    // Number 1
-    if (isObject(removeConditions)) {
-        return processObject(dotArray, removeConditions);
-    }
-
-    if (isArray(removeConditions)) {
-        for (var i = 0, length = removeConditions.length; i < length; ++i) {
-            var removeCondition = removeConditions[i];
-
-            // Number 2
-            if (isObject(removeCondition)) {
-                processObject(dotArray, removeCondition);
-            }
-
-            if (isString(removeCondition)) {
-                processString(dotArray, removeCondition);
+    for (var key1 in dotArray) {
+        for (var key2 in dotArrayOfKeys) {
+            if (!dotArray.hasOwnProperty(key2)) {
+                dotArray[addConditionObject] = '';
             }
         }
+    }
 
-        return toMultiLayeredObject(dotArray);
+    return toMultiLayeredObject(dotArray);
+};
+
+var keyleet = {
+    /**
+     * Deletes keys from object based on what object and removeConditions have in common
+     *
+     * @param object
+     * @param removeConditions
+     */
+    deleteKeys: function(object, removeConditions) {
+        // First parameter should always be object
+        if (!(isObject(object))) {
+            throw new InvalidInputException('First parameter should be object literal');
+        }
+
+        if (typeof removeConditions === 'undefined') {
+            throw new InvalidInputException('Second parameter should be provided');
+        }
+
+        var dotArray = getAllKeysForObject(object);
+
+        // From now on removeConditions will be checked, a few options are possible:
+        // 1. Object literal containing keys and possibly values which should be removed from the object
+        // 2. Array containing a bunch of number 1.
+        // 3. String in the form of key.nestedkey which will delete the keys from an object
+        // 4. Array containing number 3.
+
+        // Number 3
+        if (isString(removeConditions)) {
+            return processDeleteString(dotArray, removeConditions);
+        }
+
+        // Number 1
+        if (isObject(removeConditions)) {
+            return processDeleteObject(dotArray, removeConditions);
+        }
+
+        if (isArray(removeConditions)) {
+            for (var i = 0, length = removeConditions.length; i < length; ++i) {
+                var removeCondition = removeConditions[i];
+
+                // Number 2
+                if (isObject(removeCondition)) {
+                    processDeleteObject(dotArray, removeCondition);
+                }
+
+                if (isString(removeCondition)) {
+                    processDeleteString(dotArray, removeCondition);
+                }
+            }
+
+            return toMultiLayeredObject(dotArray);
+        }
+    },
+    /**
+     * Returns a value of an object which is determined by the keyString, returns undefined if no value is found
+     *
+     * @param object
+     * @param keyString Form of: 'key.nestedkey', 'key' also works
+     */
+    accessValueByString: function(object, keyString) {
+        // First parameter should always be object
+        if (!(isObject(object))) {
+            throw new InvalidInputException('First parameter should be object literal');
+        }
+
+        // Check if a dot is not present, then just return the key
+        if (keyString.indexOf('.') < 1) {
+            return object[keyString];
+        }
+
+        var dotArray = getAllKeysForObject(object);
+
+        return dotArray[keyString];
+    },
+    addKeys: function(object, addConditions) {
+        // First parameter should always be object
+        if (!(isObject(object))) {
+            throw new InvalidInputException('First parameter should be object literal');
+        }
+
+        if (typeof addConditions === 'undefined') {
+            throw new InvalidInputException('Second parameter should be provided');
+        }
+
+        var dotArray = getAllKeysForObject(object);
+
+        // From now on addConditions will be checked, a few options are possible:
+        // 1. Object literal containing keys and possibly values which should be added to the object
+        // 2. Array containing a bunch of number 1.
+        // 3. String in the form of key.nestedkey which will add the keys to an object
+        // 4. Array containing number 3.
+
+        // Number 3
+        if (isString(addConditions)) {
+            return processAddString(dotArray, addConditions);
+        }
+
+        // Number 1
+        if (isObject(addConditions)) {
+            return processAddObject(dotArray, addConditions);
+        }
+
+        if (isArray(addConditions)) {
+            for (var i = 0, length = addConditions.length; i < length; ++i) {
+                var addCondition = addConditions[i];
+
+                // Number 2
+                if (isObject(addCondition)) {
+                    processAddObject(dotArray, addCondition);
+                }
+
+                if (isString(addCondition)) {
+                    processAddString(dotArray, addCondition);
+                }
+            }
+
+            return toMultiLayeredObject(dotArray);
+        }
     }
 };
 
-module.exports = deleteKeys;
+module.exports = keyleet;

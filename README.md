@@ -2,6 +2,8 @@
 
 ## Library to delete keys from objects.
 
+[![Build Status](https://travis-ci.org/jkaan/keyleet.svg?branch=master)](https://travis-ci.org/jkaan/keyleet)
+
 ### Installation
 `npm install keyleet`
 
