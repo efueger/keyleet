@@ -94,7 +94,7 @@ var object = {
     data: {
         personalInfo: {
             name: {
-                firstName: 'Testy
+                firstName: 'Testy'
                 }
         }
     }
