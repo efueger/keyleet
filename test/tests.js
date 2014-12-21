@@ -8,7 +8,10 @@ var object = {
     data: {
         name: 'Testie Test',
         firstName: 'Testie',
-        lastName: 'Test'
+        lastName: 'Test',
+        profile: {
+            address: 'Test Street'
+        }
     }
 };
 
@@ -74,7 +77,13 @@ describe('delKey', function() {
     it('shall check if accessValueByString method correctly works if normal key should be retrieved', function() {
         var value = keyleet.accessValueByString(object, 'data');
 
-        assert.deepEqual(value, {name: 'Testie Test', firstName: 'Testie', lastName: 'Test'});
+        assert.deepEqual(value, {name: 'Testie Test', firstName: 'Testie', lastName: 'Test', profile: {address: 'Test Street'}});
+    });
+
+    it('shall check if accessValueByString method correctly works if nested key is retrieved which resolves to array', function() {
+        var value = keyleet.accessValueByString(object, 'data.profile');
+
+        assert.deepEqual(value, {address: 'Test Street'});
     });
 
     it('shall check if addKeys parameter 1 is object', function() {

@@ -105,6 +105,7 @@ var value = keyleet.accessValueByString(object, 'data.personalInfo.name.firstNam
 
 // Access top level key
 var dataArray = keyleet.accessValueByString(object, 'data');
-```
 
-**To note:** Accessing a nested key which value resolves to an array will return undefined, not yet supported.
+// Accessing nested property which doesn't resolve to a single value
+var personalInfoArray = keyleet.accessValueByString(object, 'data.personalInfo');
+```

@@ -189,11 +189,31 @@ var keyleet = {
         }
 
         // Check if a dot is not present, then just return the key
-        if (keyString.indexOf('.') < 1) {
+        if (keyString.indexOf('.') == -1) {
             return object[keyString];
         }
 
         var dotArray = getAllKeysForObject(object);
+
+        // This probably means
+        if (typeof dotArray[keyString] === 'undefined') {
+            var keys = keyString.split(".");
+
+            var array = undefined;
+
+            for(var i = 0, length = keys.length; i < length; i++) {
+                var key = keys[i];
+
+                if (array) {
+                    array = array[key];
+                    continue;
+                }
+
+                array = object[key];
+            }
+
+            return array;
+        }
 
         return dotArray[keyString];
     },

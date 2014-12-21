@@ -1,6 +1,6 @@
 {
   "name": "keyleet",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Delete keys from object",
   "main": "keyleet.js",
   "scripts": {
