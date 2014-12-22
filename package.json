@@ -1,6 +1,6 @@
 {
   "name": "keyleet",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Delete keys from object",
   "main": "keyleet.js",
   "scripts": {
@@ -23,6 +23,7 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "mocha": "~1.19.0",
-    "should": "~3.3.1"
+    "should": "~3.3.1",
+    "benchmark": "1.0.0"
   }
 }

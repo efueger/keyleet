@@ -1,67 +1,77 @@
 "use strict";
 
-var InvalidInputException = function(message) {
+var InvalidInputException = function (message) {
     this.name = "InvalidInputException";
     this.message = message;
-};
-
-var isArray = function(possibleArray) {
-    return (!!possibleArray) && (possibleArray.constructor == Array);
 };
 
 /**
  * Checks if possibleString is a string.
  *
- * To note: Doesn't correctly function for object-wrapped strings. ex: new String('test')
+ * Works for primitive-type strings and also for object-wrapped strings.
  *
  * @param possibleString
  * @returns {boolean}
  */
-var isString = function(possibleString) {
-    return typeof possibleString === 'string';
+var isString = function (possibleString) {
+    return (!!possibleString) && (possibleString.constructor === String);
 };
-
 /**
- * Function only matches object literal, not any custom made object or something.
+ * Function only matches object literal, not any custom made object that has a different constructor than Object.
  *
  * @param possibleObject
  * @returns {boolean}
  */
-var isObject = function(possibleObject) {
+var isObject = function (possibleObject) {
     return (!!possibleObject) && (possibleObject.constructor === Object);
 };
 
-var getAllKeysForObject =  function(object, prefixKey, arrayOfValues) {
+/**
+ * Checks if posibleArray is an array
+ *
+ * @param possibleArray
+ * @returns {boolean}
+ */
+var isArray = function (possibleArray) {
+    return (!!possibleArray) && (possibleArray.constructor === Array);
+};
+
+var getAllKeysForObject = function (object, prefixKey, arrayOfValues) {
     arrayOfValues = arrayOfValues || [];
     var prefix = prefixKey || undefined;
-    if (object) {
-        for (var property in object) {
-            if (typeof object[property] == "object") {
-                var methodProperty = "";
-                if (typeof prefix !== 'undefined') {
-                    methodProperty += prefix + ".";
-                }
-                methodProperty += property;
-                getAllKeysForObject(object[property], methodProperty, arrayOfValues);
-            } else if (typeof object[property] != "function") {
-                var valueProperty = "";
-                if (typeof prefix !== 'undefined') {
-                    valueProperty += prefix + ".";
-                }
-                valueProperty += property;
-                arrayOfValues[valueProperty] = object[property];
-            }
+
+    if (!object) {
+        return arrayOfValues;
+    }
+
+    for (var property in object) {
+        var objectProperty = "";
+
+        if (typeof prefix !== 'undefined') {
+            objectProperty += prefix + ".";
+        }
+
+        objectProperty += property;
+
+        if (typeof object[property] == "object") {
+            getAllKeysForObject(object[property], objectProperty, arrayOfValues);
+        } else if (typeof object[property] != "function") {
+            arrayOfValues[objectProperty] = object[property];
         }
     }
     return arrayOfValues;
 };
 
-var toMultiLayeredObject = function (data) {
+var toMultiLayeredObject = function (objectToTransform) {
     var result = {};
-    Object.keys(data).forEach(function (key) {
-        var value = data[key];
-        var keyParent = key.split(".")[0];
-        var keyChild = key.split(".")[1];
+
+    var objectKeys = Object.keys(objectToTransform);
+
+    for (var i = 0, length = objectKeys.length; i < length; ++i) {
+        var currentKey = objectKeys[i];
+        var value = objectToTransform[currentKey];
+        var keyParent = currentKey.split(".")[0];
+        var keyChild = currentKey.split(".")[1];
 
         if (!result[keyParent]) {
             result[keyParent] = {};
@@ -73,26 +83,24 @@ var toMultiLayeredObject = function (data) {
         }
 
         result[keyParent][keyChild] = value;
-    });
+    }
 
     return result;
 };
 
-var processDeleteObject = function(dotArray, removeConditionObject) {
+var processDeleteObject = function (dotArray, removeConditionObject) {
     var dotArrayOfKeys = getAllKeysForObject(removeConditionObject);
 
-    for (var key1 in dotArray) {
-        for (var key2 in dotArrayOfKeys) {
-            if (dotArray.hasOwnProperty(key2)) {
-                delete dotArray[key2];
-            }
+    for (var key in dotArrayOfKeys) {
+        if (dotArray.hasOwnProperty(key)) {
+            delete(dotArray[key]);
         }
     }
 
     return toMultiLayeredObject(dotArray);
 };
 
-var processDeleteString = function(dotArray, removeConditionString) {
+var processDeleteString = function (dotArray, removeConditionString) {
     if (dotArray.hasOwnProperty(removeConditionString)) {
         delete dotArray[removeConditionString];
     }
@@ -100,7 +108,7 @@ var processDeleteString = function(dotArray, removeConditionString) {
     return toMultiLayeredObject(dotArray);
 };
 
-var processAddString = function(dotArray, addConditionString) {
+var processAddString = function (dotArray, addConditionString) {
     if (dotArray.hasOwnProperty(addConditionString)) {
         return toMultiLayeredObject(dotArray);
     }
@@ -110,14 +118,12 @@ var processAddString = function(dotArray, addConditionString) {
     return toMultiLayeredObject(dotArray);
 };
 
-var processAddObject = function(dotArray, addConditionObject) {
+var processAddObject = function (dotArray, addConditionObject) {
     var dotArrayOfKeys = getAllKeysForObject(addConditionObject);
 
-    for (var key1 in dotArray) {
-        for (var key2 in dotArrayOfKeys) {
-            if (!dotArray.hasOwnProperty(key2)) {
-                dotArray[key2] = '';
-            }
+    for (var key in dotArrayOfKeys) {
+        if (!dotArray.hasOwnProperty(key)) {
+            dotArray[key] = '';
         }
     }
 
@@ -131,8 +137,7 @@ var keyleet = {
      * @param object
      * @param removeConditions
      */
-    deleteKeys: function(object, removeConditions) {
-        // First parameter should always be object
+    deleteKeys: function (object, removeConditions) {
         if (!(isObject(object))) {
             throw new InvalidInputException('First parameter should be object literal');
         }
@@ -168,6 +173,7 @@ var keyleet = {
                     processDeleteObject(dotArray, removeCondition);
                 }
 
+                // Number 4
                 if (isString(removeCondition)) {
                     processDeleteString(dotArray, removeCondition);
                 }
@@ -182,7 +188,7 @@ var keyleet = {
      * @param object
      * @param keyString Form of: 'key.nestedkey', 'key' also works
      */
-    accessValueByString: function(object, keyString) {
+    accessValueByString: function (object, keyString) {
         // First parameter should always be object
         if (!(isObject(object))) {
             throw new InvalidInputException('First parameter should be object literal');
@@ -193,31 +199,25 @@ var keyleet = {
             return object[keyString];
         }
 
-        var dotArray = getAllKeysForObject(object);
+        var keys = keyString.split(".");
 
-        // This probably means
-        if (typeof dotArray[keyString] === 'undefined') {
-            var keys = keyString.split(".");
+        var currentArrayValue = undefined;
 
-            var array = undefined;
+        // Loop over all entries in keys array while traversing through the array until final result is reached
+        for (var i = 0, length = keys.length; i < length; i++) {
+            var key = keys[i];
 
-            for(var i = 0, length = keys.length; i < length; i++) {
-                var key = keys[i];
-
-                if (array) {
-                    array = array[key];
-                    continue;
-                }
-
-                array = object[key];
+            if (currentArrayValue) {
+                currentArrayValue = currentArrayValue[key];
+                continue;
             }
 
-            return array;
+            currentArrayValue = object[key];
         }
 
-        return dotArray[keyString];
+        return currentArrayValue;
     },
-    addKeys: function(object, addConditions) {
+    addKeys: function (object, addConditions) {
         // First parameter should always be object
         if (!(isObject(object))) {
             throw new InvalidInputException('First parameter should be object literal');
