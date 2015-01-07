@@ -1,7 +1,7 @@
 {
   "name": "keyleet",
-  "version": "0.3.1",
-  "description": "Delete keys from object",
+  "version": "0.3.2",
+  "description": "Add, delete and retrieve keys from objects",
   "main": "keyleet.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha -R tap"
@@ -15,15 +15,16 @@
     "remove",
     "object",
     "key",
-    "attribute",
-    "nested"
+    "property",
+    "nested",
+    "add",
+    "retrieve"
   ],
   "author": "Joey Kaan",
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
     "mocha": "~1.19.0",
-    "should": "~3.3.1",
-    "benchmark": "1.0.0"
+    "should": "~3.3.1"
   }
 }

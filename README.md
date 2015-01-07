@@ -1,6 +1,6 @@
 # Keyleet
 
-## Library to delete keys from objects.
+## Library to add, delete and retrieve keys from objects.
 
 [![Build Status](https://travis-ci.org/jkaan/keyleet.svg?branch=master)](https://travis-ci.org/jkaan/keyleet)
 
