@@ -1,6 +1,6 @@
 {
   "name": "keyleet",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Add, delete and retrieve keys from objects",
   "main": "keyleet.js",
   "scripts": {
